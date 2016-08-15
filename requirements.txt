@@ -1,0 +1,10 @@
+
+# keep things sorted
+
+lxml
+msgpack-python
+PyYAML
+requests
+six
+typeddict
+ujson

@@ -1,2 +1,11 @@
-# curlify
-A library to convert python requests request object to curl command.
+# Curlify - convert python requests request object to cURL command
+
+# Example
+
+```py
+import curlify
+import requests
+
+response = requests.get("http://google.ru")
+print(curlify.to_curl(response.request)
+```
