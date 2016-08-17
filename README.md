@@ -1,6 +1,11 @@
 # Curlify - convert python requests request object to cURL command
 
-# Example
+## Installation
+```sh
+pip install curlify
+```
+
+## Example
 
 ```py
 import curlify
