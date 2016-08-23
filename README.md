@@ -5,6 +5,11 @@
 pip install curlify
 ```
 
+## Changes
+
+### v.1.2
+   * Order of headers is deterministic (thanks to @tomviner)
+
 ## Example
 
 ```py
