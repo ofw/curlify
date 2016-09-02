@@ -35,6 +35,7 @@ setup(
     author='Egor Orlov',
     author_email='oeegor@gmail.com',
     platforms='any',
+    url='https://github.com/oeegor/curlify',
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
