@@ -8,7 +8,7 @@ pip install curlify
 ## Changes
 
 ### v.2.0.1
-    * Added `compressed` parameter to `to_curl` function, if it is needed to add `--compressed` option to generated cURL command.
+   * Added `compressed` parameter to `to_curl` function, if it is needed to add `--compressed` option to generated cURL command.
 
 ### v.2.0
    * Skip `-d` option if request body is empty https://github.com/ofw/curlify/issues/6
