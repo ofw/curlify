@@ -8,7 +8,6 @@ pip install curlify
 ## Changes
 
 ### v.2.0
-
     * Skip `-d` option if request body is empty https://github.com/ofw/curlify/issues/6
     * Minor changes to header sorting
 
