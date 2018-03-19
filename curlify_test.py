@@ -30,6 +30,20 @@ def test_prepare_request():
     response = requests.Request('GET', "http://google.ru", data={"a": "b"}, cookies={"foo": "bar"},
                                 headers={"user-agent": "UA"})
 
+    assert curlify.to_curl(response.prepare(), compressed=False) == (
+        "curl -X GET "
+        "-H 'Content-Length: 3' "
+        "-H 'Content-Type: application/x-www-form-urlencoded' "
+        "-H 'Cookie: foo=bar' "
+        "-H 'user-agent: UA' "
+        "-d 'a=b' 'http://google.ru/'"
+    )
+
+
+def test_prepare_compressed_request():
+    response = requests.Request('GET', "http://google.ru", data={"a": "b"}, cookies={"foo": "bar"},
+                                headers={"user-agent": "UA"})
+
     assert curlify.to_curl(response.prepare()) == (
         "curl -X GET "
         "-H 'Content-Length: 3' "
