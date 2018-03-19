@@ -22,5 +22,5 @@ import requests
 
 response = requests.get("http://google.ru")
 print(curlify.to_curl(response.request))
-# curl -X GET -H 'Connection: keep-alive' -H 'Accept-Encoding: gzip, deflate' -H 'Accept: */*' -H 'User-Agent: python-requests/2.7.0 CPython/2.7.11 Darwin/15.6.0' -d '' 'http://www.google.ru/'
+# curl -X 'GET' -H 'Accept: */*' -H 'Accept-Encoding: gzip, deflate' -H 'Connection: keep-alive' -H 'User-Agent: python-requests/2.18.4' 'http://www.google.ru/'
 ```
