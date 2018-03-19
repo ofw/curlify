@@ -38,3 +38,26 @@ def test_ok():
         "-H 'user-agent: mytest' "
         "-d 'a=b' 'http://google.ru/'"
     )
+
+
+def test_prepare_request():
+    request = requests.Request(
+        'GET', "http://google.ru",
+        headers={"user-agent": "UA"},
+    )
+
+    assert curlify.to_curl(request.prepare()) == (
+        "curl -X 'GET' "
+        "-H 'user-agent: UA' "
+        "'http://google.ru/'"
+    )
+
+
+def test_comressed():
+    request = requests.Request(
+        'GET', "http://google.ru",
+        headers={"user-agent": "UA"},
+    )
+    assert curlify.to_curl(request.prepare(), compressed=True) == (
+        "curl -X 'GET' -H 'user-agent: UA' --compressed 'http://google.ru/'"
+    )

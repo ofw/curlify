@@ -1,7 +1,15 @@
 # coding: utf-8
 
 
-def to_curl(request):
+def to_curl(request, compressed=False):
+    """
+    Returns string with curl command by provided request object
+
+    Parameters
+    ----------
+    compressed : bool
+        If `True` then `--compressed` argument will be added to result
+    """
     parts = [
         ('curl', None),
         ('-X', request.method),
@@ -12,6 +20,9 @@ def to_curl(request):
 
     if request.body:
         parts += [('-d', request.body)]
+
+    if compressed:
+        parts += [('--compressed', None)]
 
     parts += [(None, request.url)]
 
