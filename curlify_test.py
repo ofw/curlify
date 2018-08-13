@@ -61,3 +61,15 @@ def test_comressed():
     assert curlify.to_curl(request.prepare(), compressed=True) == (
         "curl -X 'GET' -H 'user-agent: UA' --compressed 'http://google.ru/'"
     )
+
+
+def test_post_json():
+    data = {'foo': 'bar'}
+    url = 'https://httpbin.org/post'
+
+    r = requests.Request('POST', url, json=data)
+    assert curlify.to_curl(r.prepare()) == (
+        "curl -X 'POST' -H 'Content-Length: 14' "
+        "-H 'Content-Type: application/json' "
+        "-d '{\"foo\": \"bar\"}' 'https://httpbin.org/post'"
+    )

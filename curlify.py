@@ -19,7 +19,10 @@ def to_curl(request, compressed=False):
         parts += [('-H', '{0}: {1}'.format(k, v))]
 
     if request.body:
-        parts += [('-d', request.body)]
+        body = request.body
+        if isinstance(body, bytes):
+            body = body.decode('utf-8')
+        parts += [('-d', body)]
 
     if compressed:
         parts += [('--compressed', None)]

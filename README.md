@@ -7,6 +7,9 @@ pip install curlify
 
 ## Changes
 
+### v.2.1.0
+   * Fixed body rendering when using `json` param to request function.
+
 ### v.2.0.1
    * Added `compressed` parameter to `to_curl` function, if it is needed to add `--compressed` option to generated cURL command.
 
