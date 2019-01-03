@@ -53,7 +53,7 @@ def test_prepare_request():
     )
 
 
-def test_comressed():
+def test_compressed():
     request = requests.Request(
         'GET', "http://google.ru",
         headers={"user-agent": "UA"},
@@ -62,6 +62,14 @@ def test_comressed():
         "curl -X 'GET' -H 'user-agent: UA' --compressed 'http://google.ru/'"
     )
 
+def test_verify():
+    request = requests.Request(
+        'GET', "http://google.ru",
+        headers={"user-agent": "UA"},
+    )
+    assert curlify.to_curl(request.prepare(), verify=False) == (
+        "curl -X 'GET' -H 'user-agent: UA' --insecure 'http://google.ru/'"
+    )
 
 def test_post_json():
     data = {'foo': 'bar'}
