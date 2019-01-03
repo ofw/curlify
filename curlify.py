@@ -1,7 +1,7 @@
 # coding: utf-8
 
 
-def to_curl(request, compressed=False):
+def to_curl(request, compressed=False, verify=True):
     """
     Returns string with curl command by provided request object
 
@@ -27,7 +27,7 @@ def to_curl(request, compressed=False):
     if compressed:
         parts += [('--compressed', None)]
 
-    if not request.verify:
+    if not verify:
         parts += [('--insecure', None)]
 
     parts += [(None, request.url)]
