@@ -27,6 +27,9 @@ def to_curl(request, compressed=False):
     if compressed:
         parts += [('--compressed', None)]
 
+    if not request.verify:
+        parts += [('--insecure', None)]
+
     parts += [(None, request.url)]
 
     flat_parts = []
