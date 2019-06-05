@@ -1,10 +1,25 @@
 # coding: utf-8
 import sys
 
-if sys.version_info.major >= 3:
-    from shlex import quote
-else:
+PY2 = sys.version_info[0] == 2
+
+if not PY2:  
     from pipes import quote
+
+    # From https://github.com/flask-admin/flask-admin/blob/master/flask_admin/_compat.py (License BSD) 
+    def as_unicode(s):
+        if isinstance(s, bytes):
+            return s.decode('utf-8')
+        return s
+
+else:
+    from shlex import quote
+
+    def as_unicode(s):
+        if isinstance(s, str):
+            return s.decode('utf-8')
+
+        return unicode(s)  # NOQA: F82
 
 
 def to_curl(request, compressed=False, verify=True):
@@ -16,18 +31,13 @@ def to_curl(request, compressed=False, verify=True):
     compressed : bool
         If `True` then `--compressed` argument will be added to result
     """
-    parts = [
-        ('curl', None),
-        ('-X', request.method),
-    ]
+    parts = [('curl', None), ('-X', request.method)]
 
     for k, v in sorted(request.headers.items()):
-        parts += [('-H', '{0}: {1}'.format(k, v))]
+        parts += [('-H', '{0}: {1}'.format(as_unicode(k), as_unicode(v)))]
 
     if request.body:
-        body = request.body
-        if isinstance(body, bytes):
-            body = body.decode('utf-8')
+        body = as_unicode(request.body)
         parts += [('-d', body)]
 
     if compressed:
