@@ -22,7 +22,7 @@ def to_curl(request, compressed=False, verify=True):
         body = request.body
         if isinstance(body, bytes):
             body = body.decode('utf-8')
-        parts += [('-d', body)]
+        parts += [('-d', body.replace("'", "\\'")]
 
     if compressed:
         parts += [('--compressed', None)]
