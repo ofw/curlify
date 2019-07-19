@@ -29,7 +29,10 @@ setup(
         'curlify',
     ],
     include_package_data=True,
-    install_requires=['requests'],
+    install_requires=[
+        'requests',
+        'shlex'
+    ],
     license='MIT License',
     description='Library to convert python requests object to curl command.',
     author='Egor Orlov',

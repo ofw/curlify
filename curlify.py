@@ -1,4 +1,8 @@
 # coding: utf-8
+try:  # py3
+    from shlex import quote
+except ImportError:  # py2
+    from pipes import quote
 
 
 def to_curl(request, compressed=False, verify=True):
@@ -35,8 +39,8 @@ def to_curl(request, compressed=False, verify=True):
     flat_parts = []
     for k, v in parts:
         if k:
-            flat_parts.append(k)
+            flat_parts.append(quote(k))
         if v:
-            flat_parts.append("'{0}'".format(v))
+            flat_parts.append(quote(v).replace("\n", "\\n"))
 
     return ' '.join(flat_parts)
