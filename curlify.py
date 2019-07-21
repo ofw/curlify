@@ -1,7 +1,9 @@
 # coding: utf-8
-try:  # py3
+import sys
+
+if sys.version_info.major >= 3:
     from shlex import quote
-except ImportError:  # py2
+else:
     from pipes import quote
 
 
