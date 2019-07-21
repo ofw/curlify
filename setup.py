@@ -31,8 +31,6 @@ setup(
     include_package_data=True,
     install_requires=[
         'requests',
-        'shlex >= "3"',
-        'pipes < "3"',
     ],
     license='MIT License',
     description='Library to convert python requests object to curl command.',
