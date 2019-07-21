@@ -7,6 +7,9 @@ pip install curlify
 
 ## Changes
 
+### v.2.2.0
+   * Fixed shell quotes. Thanks to @leNEKO
+
 ### v.2.1.1
    * Add `--insecure` flag if `verify` parameter is not `True`
 
