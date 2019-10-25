@@ -27,7 +27,13 @@ def to_curl(request, compressed=False, verify=True):
     if request.body:
         body = request.body
         if isinstance(body, bytes):
-            body = body.decode('utf-8')
+            try:
+                body = body.decode('utf-8')
+            except (UnicodeDecodeError, AttributeError):
+                import re
+                matches = re.search(r'filename=\"([\w.]*)\"', str(body))
+                if matches:
+                    body = f'data=@"{matches.group(1)}"'
         parts += [('-d', body)]
 
     if compressed:

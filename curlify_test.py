@@ -111,3 +111,21 @@ def test_post_csv_file():
     )
 
     assert curlified == expected
+
+
+def test_post_binary_file():
+    r = requests.Request(
+        method='POST',
+        url='https://httpbin.org/post',
+        files={'file': open('cat.jpg', 'rb')},
+        headers={
+            'Content-Type': 'multipart/form-data'
+        }
+    )
+
+    curlified = curlify.to_curl(r.prepare())
+    expected = 'curl -X POST -H \'Content-Length: 55558\' ' \
+               '-H \'Content-Type: multipart/form-data\' ' \
+               '-d \'data=@"cat.jpg"\' https://httpbin.org/post'
+
+    assert curlified == expected
