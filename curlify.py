@@ -24,6 +24,7 @@ def to_curl(request, compressed=False, verify=True):
     for k, v in sorted(request.headers.items()):
         parts += [('-H', '{0}: {1}'.format(k, v))]
 
+    form_data = False
     if request.body:
         body = request.body
         if isinstance(body, bytes):
@@ -31,10 +32,13 @@ def to_curl(request, compressed=False, verify=True):
                 body = body.decode('utf-8')
             except (UnicodeDecodeError, AttributeError):
                 import re
-                matches = re.search(r'filename=\"([\w.]*)\"', str(body))
-                if matches:
-                    body = f'data=@"{matches.group(1)}"'
-        parts += [('-d', body)]
+                matches = re.search(r'.*Content-Disposition: form-data; name=\"(\w+)\"; filename=\"([\w.]+)\".*', str(body))
+                if matches and len(matches.groups()) == 2:
+                    content = '{0}=@{1}'.format(*matches.groups())
+                    parts += [('-F', content)]
+                    form_data = True
+        if not form_data:
+            parts += [('-d', body)]
 
     if compressed:
         parts += [('--compressed', None)]

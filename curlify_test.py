@@ -126,6 +126,6 @@ def test_post_binary_file():
     curlified = curlify.to_curl(r.prepare())
     expected = 'curl -X POST -H \'Content-Length: 55558\' ' \
                '-H \'Content-Type: multipart/form-data\' ' \
-               '-d \'data=@"cat.jpg"\' https://httpbin.org/post'
+               '-F file=@cat.jpg https://httpbin.org/post'
 
     assert curlified == expected
