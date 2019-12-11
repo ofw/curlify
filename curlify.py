@@ -1,5 +1,15 @@
 # coding: utf-8
+"""
+A library to convert python requests request object to curl command.
+
+Usage:
+
+    >>> curlify.to_curl(preparedRequest)
+"""
+import os
 import sys
+import tempfile
+from _md5 import md5
 
 if sys.version_info.major >= 3:
     from shlex import quote
@@ -21,14 +31,26 @@ def to_curl(request, compressed=False, verify=True):
         ('-X', request.method),
     ]
 
-    for k, v in sorted(request.headers.items()):
-        parts += [('-H', '{0}: {1}'.format(k, v))]
+    for k, value in sorted(request.headers.items()):
+        parts += [('-H', '{0}: {1}'.format(k, value))]
 
     if request.body:
         body = request.body
+        data_arg = '-d'
         if isinstance(body, bytes):
-            body = body.decode('utf-8')
-        parts += [('-d', body)]
+            try:
+                body = body.decode('utf-8')
+            # handle binary files
+            except UnicodeDecodeError:
+                data_file = os.path.join(
+                    tempfile.tempdir,
+                    'curlify.{}.data'.format(md5(body).hexdigest())
+                )
+                with open(data_file, 'wb') as file:
+                    file.write(body)
+                body = f'@{data_file}'
+                data_arg = '--data-binary'
+        parts += [(data_arg, body)]
 
     if compressed:
         parts += [('--compressed', None)]
@@ -39,10 +61,10 @@ def to_curl(request, compressed=False, verify=True):
     parts += [(None, request.url)]
 
     flat_parts = []
-    for k, v in parts:
+    for k, value in parts:
         if k:
             flat_parts.append(quote(k))
-        if v:
-            flat_parts.append(quote(v))
+        if value:
+            flat_parts.append(quote(value))
 
     return ' '.join(flat_parts)
