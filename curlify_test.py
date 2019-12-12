@@ -1,7 +1,9 @@
 # coding: utf-8
 import re
-import responses
+
 import requests
+import responses
+
 import curlify
 
 
