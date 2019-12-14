@@ -18,13 +18,17 @@ else:
 
 
 def to_curl(request, compressed=False, verify=True):
-    """
-    Returns string with curl command by provided request object
+    """Returns string with curl command by provided request object
 
-    Parameters
-    ----------
-    compressed : bool
-        If `True` then `--compressed` argument will be added to result
+    Arguments:
+        request {request} -- a prepared Request
+
+    Keyword Arguments:
+        compressed {bool} -- `--compressed` argument added if True (default: {False})
+        verify {bool} -- `--insecure` argument added if False (default: {True})
+
+    Returns:
+        string -- a curl command
     """
     parts = [
         ('curl', None),
@@ -35,22 +39,7 @@ def to_curl(request, compressed=False, verify=True):
         parts += [('-H', '{0}: {1}'.format(k, value))]
 
     if request.body:
-        body = request.body
-        data_arg = '-d'
-        if isinstance(body, bytes):
-            try:
-                body = body.decode('utf-8')
-            # handle binary files
-            except UnicodeDecodeError:
-                data_file = os.path.join(
-                    tempfile.tempdir,
-                    'curlify.{}.data'.format(md5(body).hexdigest())
-                )
-                with open(data_file, 'wb') as file:
-                    file.write(body)
-                body = f'@{data_file}'
-                data_arg = '--data-binary'
-        parts += [(data_arg, body)]
+        parts += [handle_body(request.body)]
 
     if compressed:
         parts += [('--compressed', None)]
@@ -68,3 +57,29 @@ def to_curl(request, compressed=False, verify=True):
             flat_parts.append(quote(value))
 
     return ' '.join(flat_parts)
+
+
+def handle_body(body):
+    """Return proper command part for request body
+
+    Arguments:
+        body {None|string|bytes} -- a request body
+
+    Returns:
+        tuple -- a command part
+    """
+    data_arg = '-d'
+    if isinstance(body, bytes):
+        try:
+            body = body.decode('utf-8')
+        # handle binary files
+        except UnicodeDecodeError:
+            data_file = os.path.join(
+                tempfile.tempdir,
+                'curlify.{}.data'.format(md5(body).hexdigest())
+            )
+            with open(data_file, 'wb') as file:
+                file.write(body)
+            body = f'@{data_file}'
+            data_arg = '--data-binary'
+    return (data_arg, body)
