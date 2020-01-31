@@ -111,3 +111,17 @@ def test_post_csv_file():
     )
 
     assert curlified == expected
+
+
+def test_escapes_newlines():
+    r = requests.Request(
+        method='GET',
+        url='https://httpbin.org/get',
+        headers={
+            'User-Agent': 'UA',
+            'Accept': 'application/json'
+        }
+    )
+    curlified = curlify.to_curl(r.prepare(), header_sep='_')
+    expected = "curl -X GET -H 'Accept: application/json'_ -H 'User-Agent: UA'_ https://httpbin.org/get"
+    assert curlified == expected
