@@ -32,6 +32,14 @@ setup(
     install_requires=[
         'requests',
     ],
+    extras_require={
+        "testing": [
+            "flake8",
+            "pytest",
+            "pyflakes",
+            "pytest-cov",
+        ],
+    },
     license='MIT License',
     description='Library to convert python requests object to curl command.',
     author='Egor Orlov',
