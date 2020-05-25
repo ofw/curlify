@@ -30,10 +30,21 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        'requests',
     ],
+    extras_require={
+        'testing': [
+            'flake8',
+            'httpx',
+            'pyflakes',
+            'pytest',
+            'pytest-cov',
+            'requests',
+            'responses',
+            'respx',
+        ],
+    },
     license='MIT License',
-    description='Library to convert python requests object to curl command.',
+    description='Library to convert python requests / httpx object to curl command.',
     author='Egor Orlov',
     author_email='oeegor@gmail.com',
     platforms='any',
