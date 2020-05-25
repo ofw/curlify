@@ -3,7 +3,7 @@ import sys
 
 if sys.version_info.major >= 3:
     from shlex import quote
-else:
+else:  # pragma: no cover, 2.7 flavor is not tested
     from pipes import quote
 
 
@@ -22,13 +22,13 @@ def to_curl(request, compressed=False, verify=True):
     ]
 
     for k, v in sorted(request.headers.items()):
-        parts += [('-H', '{0}: {1}'.format(k, v))]
+        parts += [('-H', '{0}: {1}'.format(k.lower(), v))]
 
-    if request.body:
-        body = request.body
-        if isinstance(body, bytes):
-            body = body.decode('utf-8')
-        parts += [('-d', body)]
+    body_content = request.body if hasattr(request, "body") else request.read()
+    if body_content:
+        if isinstance(body_content, bytes):
+            body_content = body_content.decode('utf-8')
+        parts += [('-d', body_content)]
 
     if compressed:
         parts += [('--compressed', None)]
@@ -36,7 +36,7 @@ def to_curl(request, compressed=False, verify=True):
     if not verify:
         parts += [('--insecure', None)]
 
-    parts += [(None, request.url)]
+    parts += [(None, str(request.url))]
 
     flat_parts = []
     for k, v in parts:
