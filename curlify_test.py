@@ -111,3 +111,17 @@ def test_post_csv_file():
     )
 
     assert curlified == expected
+
+
+def test_skip_headers():
+    r = requests.get(
+        "http://google.ru",
+        data={"a": "b"},
+        cookies={"foo": "bar"},
+    )
+    assert curlify.to_curl(r.request, skip_headers=True) == (
+        "curl -X GET "
+        "-H 'Content-Type: application/x-www-form-urlencoded' "
+        "-H 'Cookie: foo=bar' "
+        "-d a=b http://google.ru/"
+    )
