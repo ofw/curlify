@@ -1,0 +1,3 @@
+[build-system]
+# Minimum requirements for the build system to execute—see https://peps.python.org/pep-0518/#build-system-table.
+requires = ["setuptools", "wheel"]  # PEP 508 specifications.
