@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "curlify"
+version = "3.0.0"
+authors = [
+  { name="Egor Orlov", email="oeegor@gmail.com" },
+]
+license = {text = "MIT License"}
+description = "Convert Requests request objects to curl commands."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+  "Environment :: Web Environment",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+dependencies = [
+  "requests",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/oeegor/curlify"
+"Bug Tracker" = "https://github.com/oeegor/curlify/issues"
+
+[tool.setuptools]
+py-modules = [
+  "curlify",
+]
