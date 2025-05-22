@@ -41,8 +41,8 @@ def to_curl(request, compressed=False, verify=True):
     flat_parts = []
     for k, v in parts:
         if k:
-            flat_parts.append(quote(k))
+            flat_parts.append(quote(str(k)))
         if v:
-            flat_parts.append(quote(v))
+            flat_parts.append(quote(str(v)))
 
     return ' '.join(flat_parts)
