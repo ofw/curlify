@@ -1,4 +1,3 @@
-# coding: utf-8
 import curlify
 import re
 import requests
@@ -11,11 +10,11 @@ def test_empty_data():
     )
     assert curlify.to_curl(r.request) == (
         "curl -X POST "
-        "-H 'Accept: */*' "
+        "-H 'user-agent: mytest' "
         "-H 'Accept-Encoding: gzip, deflate' "
+        "-H 'Accept: */*' "
         "-H 'Connection: keep-alive' "
         "-H 'Content-Length: 0' "
-        "-H 'user-agent: mytest' "
         "http://google.ru/"
     )
 
@@ -29,13 +28,13 @@ def test_ok():
     )
     assert curlify.to_curl(r.request) == (
         "curl -X GET "
-        "-H 'Accept: */*' "
+        "-H 'user-agent: mytest' "
         "-H 'Accept-Encoding: gzip, deflate' "
+        "-H 'Accept: */*' "
         "-H 'Connection: keep-alive' "
+        "-H 'Cookie: foo=bar' "
         "-H 'Content-Length: 3' "
         "-H 'Content-Type: application/x-www-form-urlencoded' "
-        "-H 'Cookie: foo=bar' "
-        "-H 'user-agent: mytest' "
         "-d a=b http://google.ru/"
     )
 
@@ -47,7 +46,7 @@ def test_prepare_request():
     )
 
     assert curlify.to_curl(request.prepare()) == (
-        "curl -X GET "
+        "curl "
         "-H 'user-agent: UA' "
         "http://google.ru/"
     )
@@ -59,7 +58,7 @@ def test_compressed():
         headers={"user-agent": "UA"},
     )
     assert curlify.to_curl(request.prepare(), compressed=True) == (
-        "curl -X GET -H 'user-agent: UA' --compressed http://google.ru/"
+        "curl -H 'user-agent: UA' --compressed http://google.ru/"
     )
 
 
@@ -69,7 +68,7 @@ def test_verify():
         headers={"user-agent": "UA"},
     )
     assert curlify.to_curl(request.prepare(), verify=False) == (
-        "curl -X GET -H 'user-agent: UA' --insecure http://google.ru/"
+        "curl -H 'user-agent: UA' --insecure http://google.ru/"
     )
 
 
@@ -81,7 +80,7 @@ def test_post_json():
     curlified = curlify.to_curl(r.prepare())
 
     assert curlified == (
-        "curl -X POST -H 'Content-Length: 14' "
+        "curl -H 'Content-Length: 14' "
         "-H 'Content-Type: application/json' "
         "-d '{\"foo\": \"bar\"}' https://httpbin.org/post"
     )
@@ -99,9 +98,10 @@ def test_post_csv_file():
     boundary = re.search(r'boundary=(\w+)', curlified).group(1)
 
     expected = (
-        'curl -X POST -H \'Content-Length: 519\''
-        f' -H \'Content-Type: multipart/form-data; boundary={boundary}\''
+        'curl'
         ' -H \'User-agent: UA\''
+        ' -H \'Content-Length: 519\''
+        f' -H \'Content-Type: multipart/form-data; boundary={boundary}\''
         f' -d \'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="data.csv"\r\n\r\n'
         '"Id";"Title";"Content"\n'
         '1;"Simple Test";"Ici un test d\'"\'"\'échappement de simple quote"\n'
@@ -111,3 +111,44 @@ def test_post_csv_file():
     )
 
     assert curlified == expected
+
+
+def test_data_with_at():
+    request = requests.Request(
+        'GET', "http://google.ru",
+        data='@example.com'
+    )
+    assert curlify.to_curl(request.prepare()) == (
+        "curl -X GET -H 'Content-Length: 12' --data-raw @example.com http://google.ru/"
+    )
+
+
+def test_empty_header():
+    request = requests.Request(
+        'POST', "http://google.ru",
+        headers={'User-agent': ''}
+    )
+    assert curlify.to_curl(request.prepare()) == (
+        "curl -X POST -H 'User-agent;' -H 'Content-Length: 0' http://google.ru/"
+    )
+
+
+def test_pretty():
+    request = requests.Request(
+        'GET', "http://google.ru",
+        data={'foo': 'bar'}
+    )
+    assert curlify.to_curl(request.prepare(), pretty=True) == '''curl -X GET \\
+  -H 'Content-Length: 7' \\
+  -H 'Content-Type: application/x-www-form-urlencoded' \\
+  -d foo=bar \\
+  http://google.ru/'''
+
+
+def test_short():
+    request = requests.Request(
+        'GET', "http://google.ru",
+    )
+    assert curlify.to_curl(request.prepare(), pretty=True) == (
+        "curl http://google.ru/"
+    )
