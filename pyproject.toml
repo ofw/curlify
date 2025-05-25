@@ -33,8 +33,8 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/oeegor/curlify"
-"Bug Tracker" = "https://github.com/oeegor/curlify/issues"
+"Homepage" = "https://github.com/ofw/curlify"
+"Bug Tracker" = "https://github.com/ofw/curlify/issues"
 
 [tool.setuptools]
 py-modules = [
